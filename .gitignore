@@ -1,0 +1,6 @@
+/*
+!.gitignore
+!.vscode/c_cpp_properties.json
+!.vscode/tasks.json
+!make.sh
+!test.cpp
