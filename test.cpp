@@ -1,4 +1,3 @@
-#include<stdio.h>
 #include<GL/glut.h>
 void myFunc(void);
 void myInit(void);
