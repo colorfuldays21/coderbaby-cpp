@@ -1,6 +1,10 @@
 #ubuntu16.04 tasks.json c/c++ 后缀名匹配 库包含匹配bash脚本
 #$1->${fileBasename} $2->${fileExtname}
 #2016.10.21 by:coderbaby
+grep -q "gtk/gtk.h" $1
+tempgtk=$?
+grep -q "GL/glut.h" $1
+tempopengl=$?
 if [ ".c" = $2 ]; then 
     grep -q "gtk/gtk.h" $1
     if [ 0 = $? ]; then
@@ -14,14 +18,17 @@ if [ ".c" = $2 ]; then
     fi
 fi
 if [ ".cpp" = $2 ]; then
-    grep -q "gtk/gtk.h" $1
-    if [ 0 = $? ]; then
+    if [ 0 = $tempgtk ]; then
         echo "g++ -g -O2 -std=gnu++14 $1 -o `basename $1 .cpp` `pkg-config --cflags --libs gtk+-3.0`" &&
         g++ -g -O2 -std=gnu++14 $1 -o `basename $1 .cpp` `pkg-config --cflags --libs gtk+-3.0` &&
 		gnome-terminal -x bash -c "./`basename $1 .cpp`;read -n1 -p '请按任意键继续. . .'"
+    elif [ 0 = $tempopengl ]; then
+        echo "g++ -g -O2 -std=gnu++14 $1 -o `basename $1 .cpp` -lGL -lGLU -lglut" &&
+		g++ -g -O2 -std=gnu++14 $1 -o `basename $1 .cpp` -lGL -lGLU -lglut &&
+		./`basename $1 .cpp`
     else
-        echo "g++ -g -O2 -std=gnu++14 -static $1 -o `basename $1 .cpp`" &&
+		echo "g++ -g -O2 -std=gnu++14 -static $1 -o `basename $1 .cpp`" &&
         g++ -g -O2 -std=gnu++14 -static $1 -o `basename $1 .cpp` &&
-		gnome-terminal -x bash -c "./`basename $1 .cpp`;read -n1 -p '请按任意键继续. . .'"
+		gnome-terminal -x bash -c "./`basename $1 .cpp`;read -n1 -p '请按任意键继续. . .'"	
     fi
 fi
